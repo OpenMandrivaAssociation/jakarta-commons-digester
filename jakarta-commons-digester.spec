@@ -51,7 +51,7 @@ Javadoc for %{name}.
 %build
 cp LICENSE.txt ../LICENSE
 
-export CLASSPATH=%(build-classpath commons-beanutils commons-logging junit)
+export CLASSPATH=$(build-classpath commons-beanutils commons-logging junit)
 %ant dist
 
 # Build rss -- needed by struts
