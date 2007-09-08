@@ -7,7 +7,7 @@
 
 Name:           %{name}
 Version:        %{version}
-Release:        %mkrel 4.2
+Release:        %mkrel 4.3
 Epoch:          0
 Summary:        Jakarta Commons Digester Package
 License:        Apache License
