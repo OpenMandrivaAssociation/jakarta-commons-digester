@@ -7,7 +7,7 @@
 
 Name:           %{name}
 Version:        %{version}
-Release:        %mkrel 4.3
+Release:        %mkrel 4.4
 Epoch:          0
 Summary:        Jakarta Commons Digester Package
 License:        Apache License
@@ -23,8 +23,6 @@ BuildRequires:  jpackage-utils > 0:1.5
 Requires:       jakarta-commons-beanutils >= 0:1.7
 Requires:       jakarta-commons-logging >= 0:1.0
 %if %{gcj_support}
-Requires(post): java-gcj-compat
-Requires(postun): java-gcj-compat
 BuildRequires:  java-gcj-compat-devel
 %else
 BuildArch:      noarch
