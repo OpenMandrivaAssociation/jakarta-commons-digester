@@ -41,6 +41,7 @@ Epoch:          0
 Summary:        Jakarta Commons Digester Package
 License:        Apache License
 Group:          Development/Java
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL:            http://commons.apache.org/digester/
 Source0:        http://www.apache.org/dist/jakarta/commons/digester/source/commons-digester-%{version}-src.tar.gz
 Source1:        maven2jpp-mapdeps.xsl
