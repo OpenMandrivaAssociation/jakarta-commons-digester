@@ -36,7 +36,7 @@
 
 Name:           jakarta-%{short_name}
 Version:        1.8
-Release:        %mkrel 1.0.5
+Release:        %mkrel 1.0.6
 Epoch:          0
 Summary:        Jakarta Commons Digester Package
 License:        Apache License
