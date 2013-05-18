@@ -34,31 +34,28 @@
 %define short_name      commons-%{base_name}
 %define section         free
 
-Name:           jakarta-%{short_name}
-Version:        1.8
-Release:        %mkrel 1.0.8
-Epoch:          0
-Summary:        Jakarta Commons Digester Package
-License:        Apache License
-Group:          Development/Java
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-URL:            http://commons.apache.org/digester/
-Source0:        http://www.apache.org/dist/jakarta/commons/digester/source/commons-digester-%{version}-src.tar.gz
-Source1:        maven2jpp-mapdeps.xsl
-Source2:        commons-digester-1.8-jpp-depmap.xml
-BuildRequires:  ant
-BuildRequires:  jakarta-commons-beanutils >= 0:1.7
-BuildRequires:  jakarta-commons-logging >= 0:1.0
-BuildRequires:  java-rpmbuild > 0:1.5
-Requires:       jakarta-commons-beanutils >= 0:1.7
-Requires:       jakarta-commons-logging >= 0:1.0
-%if %{gcj_support}
-BuildRequires:  java-gcj-compat-devel
+Summary:	Jakarta Commons Digester Package
+Name:		jakarta-%{short_name}
+Version:	1.8
+Release:	2
+License:	Apache License
+Group:		Development/Java
+Url:		http://commons.apache.org/digester/
+Source0:	http://www.apache.org/dist/jakarta/commons/digester/source/commons-digester-%{version}-src.tar.gz
+Source1:	maven2jpp-mapdeps.xsl
+Source2:	commons-digester-1.8-jpp-depmap.xml
+%if !%{gcj_support}
+BuildArch:	noarch
 %else
-BuildArch:      noarch
+BuildRequires:	java-gcj-compat-devel
 %endif
-Provides:       %{short_name}
-Obsoletes:      %{short_name}
+BuildRequires:	ant
+BuildRequires:	jakarta-commons-beanutils >= 0:1.7
+BuildRequires:	jakarta-commons-logging >= 0:1.0
+BuildRequires:	java-rpmbuild > 0:1.5
+Requires:	jakarta-commons-beanutils >= 0:1.7
+Requires:	jakarta-commons-logging >= 0:1.0
+%rename		%{short_name}
 
 %description
 Many projects read XML configuration files to provide 
@@ -82,14 +79,14 @@ Advanced features of Digester include:
   requires the same type of processing. 
 
 %package javadoc
-Summary:        Javadoc for %{name}
-Group:          Development/Java
+Summary:	Javadoc for %{name}
+Group:		Development/Java
 
 %description javadoc
 Javadoc for %{name}.
 
 %prep
-%setup -q -n %{short_name}-%{version}-src
+%setup -qn %{short_name}-%{version}-src
 
 %build
 export CLASSPATH=%(build-classpath commons-logging commons-beanutils junit)
@@ -99,34 +96,28 @@ export CLASSPATH=%(build-classpath commons-logging commons-beanutils junit)
 export CLASSPATH=$CLASSPATH:`pwd`/dist/%{short_name}.jar
 (cd src/examples/rss; %ant dist)
 
-
 %install
-rm -rf $RPM_BUILD_ROOT
-
 # jars
-mkdir -p $RPM_BUILD_ROOT%{_javadir}
-cp -p dist/%{short_name}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-cp -p src/examples/rss/dist/%{short_name}-rss.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}-rss.jar
-(cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed "s|jakarta-||g"`; done)
-(cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed "s|-%{version}||g"`; done)
+mkdir -p %{buildroot}%{_javadir}
+cp -p dist/%{short_name}.jar %{buildroot}%{_javadir}/%{name}-%{version}.jar
+cp -p src/examples/rss/dist/%{short_name}-rss.jar %{buildroot}%{_javadir}/%{name}-%{version}-rss.jar
+(cd %{buildroot}%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed "s|jakarta-||g"`; done)
+(cd %{buildroot}%{_javadir} && for jar in *-%{version}*; do ln -sf ${jar} `echo $jar| sed "s|-%{version}||g"`; done)
 
 %add_to_maven_depmap %{short_name} %{short_name} %{version} JPP %{short_name}
 
 # pom
-install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
-install -m 644 pom.xml $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP-%{short_name}.pom
+install -d -m 755 %{buildroot}%{_datadir}/maven2/poms
+install -m 644 pom.xml %{buildroot}%{_datadir}/maven2/poms/JPP-%{short_name}.pom
 
 # javadoc
-mkdir -p $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr dist/docs/api/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+mkdir -p %{buildroot}%{_javadocdir}/%{name}-%{version}
+cp -pr dist/docs/api/* %{buildroot}%{_javadocdir}/%{name}-%{version}
+ln -s %{name}-%{version} %{buildroot}%{_javadocdir}/%{name}
 
 %if %{gcj_support}
 %{_bindir}/aot-compile-rpm
 %endif
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %post
 %update_maven_depmap
@@ -141,7 +132,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files
-%defattr(0644,root,root,0755)
 %doc LICENSE.txt NOTICE.txt RELEASE-NOTES.txt
 %{_javadir}/*
 %{_datadir}/maven2
@@ -151,85 +141,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files javadoc
-%defattr(0644,root,root,0755)
 %{_javadocdir}/%{name}-%{version}
 %doc %{_javadocdir}/%{name}
-
-
-
-%changelog
-* Wed May 04 2011 Oden Eriksson <oeriksson@mandriva.com> 0:1.8-1.0.6mdv2011.0
-+ Revision: 665800
-- mass rebuild
-
-* Fri Dec 03 2010 Oden Eriksson <oeriksson@mandriva.com> 0:1.8-1.0.5mdv2011.0
-+ Revision: 606051
-- rebuild
-
-* Wed Mar 17 2010 Oden Eriksson <oeriksson@mandriva.com> 0:1.8-1.0.4mdv2010.1
-+ Revision: 522968
-- rebuilt for 2010.1
-
-* Wed Sep 02 2009 Christophe Fergeau <cfergeau@mandriva.com> 0:1.8-1.0.3mdv2010.0
-+ Revision: 425423
-- rebuild
-
-* Sat Mar 07 2009 Antoine Ginies <aginies@mandriva.com> 0:1.8-1.0.2mdv2009.1
-+ Revision: 351271
-- rebuild
-
-* Thu Feb 14 2008 Thierry Vignaud <tv@mandriva.org> 0:1.8-1.0.1mdv2009.0
-+ Revision: 167939
-- fix no-buildroot-tag
-
-* Thu Feb 07 2008 Alexander Kurtakov <akurtakov@mandriva.org> 0:1.8-1.0.1mdv2008.1
-+ Revision: 163764
-- new version with maven poms
-
-  + Thierry Vignaud <tv@mandriva.org>
-    - kill re-definition of %%buildroot on Pixel's request
-
-* Sun Dec 16 2007 Anssi Hannula <anssi@mandriva.org> 0:1.7-4.5mdv2008.1
-+ Revision: 120906
-- buildrequire java-rpmbuild, i.e. build with icedtea on x86(_64)
-
-* Sat Sep 15 2007 Anssi Hannula <anssi@mandriva.org> 0:1.7-4.4mdv2008.0
-+ Revision: 87405
-- rebuild to filter out autorequires of GCJ AOT objects
-- remove unnecessary Requires(post) on java-gcj-compat
-
-* Sat Sep 08 2007 Pascal Terjan <pterjan@mandriva.org> 0:1.7-4.3mdv2008.0
-+ Revision: 82709
-- Make the package submitable
-- update to new version
-
-
-* Thu Mar 15 2007 Christiaan Welvaart <spturtle@mandriva.org> 1.7-4.2mdv2007.1
-+ Revision: 143908
-- rebuild for 2007.1
-- Import jakarta-commons-digester
-
-* Sun Jul 23 2006 David Walluck <walluck@mandriva.org> 0:1.7-4.1mdv2007.0
-- bump release
-
-* Mon Jun 12 2006 David Walluck <walluck@mandriva.org> 0:1.7-2.1mdv2007.0
-- bump release
-
-* Fri Jun 02 2006 David Walluck <walluck@mandriva.org> 0:1.7-1.2mdv2006.0
-- rebuild for libgcj.so.7
-
-* Sat Dec 03 2005 David Walluck <walluck@mandriva.org> 0:1.7-1.1mdk
-- sync with 1.7-1jpp
-
-* Fri May 20 2005 David Walluck <walluck@mandriva.org> 0:1.6-2.1mdk
-- release
-
-* Fri Nov 26 2004 Fernando Nasser <fnasser@redhat.com> - 0:1.6-2jpp
-- Rebuild so that rss package is included
-
-* Fri Oct 22 2004 Fernando Nasser <fnasser@redhat.com> - 0:1.6-1jpp
-- Upgrade to 1.6
-
-* Tue Aug 24 2004 Randy Watler <rwatler at finali.com> - 0:1.5-4jpp
-- Rebuild with ant-1.6.2
 
