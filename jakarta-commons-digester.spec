@@ -37,7 +37,7 @@
 Summary:	Jakarta Commons Digester Package
 Name:		jakarta-%{short_name}
 Version:	1.8
-Release:	5
+Release:	6
 License:	Apache License
 Group:		Development/Java
 Url:		http://commons.apache.org/digester/
