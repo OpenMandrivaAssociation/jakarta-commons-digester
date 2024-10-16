@@ -40,7 +40,7 @@ Version:	1.8
 Release:	7
 License:	Apache License
 Group:		Development/Java
-Url:		http://commons.apache.org/digester/
+Url:		https://commons.apache.org/digester/
 Source0:	http://www.apache.org/dist/jakarta/commons/digester/source/commons-digester-%{version}-src.tar.gz
 Source1:	maven2jpp-mapdeps.xsl
 Source2:	commons-digester-1.8-jpp-depmap.xml
